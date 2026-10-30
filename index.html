@@ -31,10 +31,26 @@
       text-align: center;
       border-bottom: 2px solid var(--border-color);
       flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-left: 15px;
+      padding-right: 15px;
     }
-    header h1 { margin: 0; font-size: 1.4rem; color: var(--primary-color); }
-    header p { margin: 3px 0 0 0; font-size: 0.8rem; color: #aaa; }
+    header div h1 { margin: 0; font-size: 1.2rem; color: var(--primary-color); }
+    header div p { margin: 2px 0 0 0; font-size: 0.75rem; color: #aaa; }
     
+    .btn-sound {
+      background: #263238;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+
     .container {
       flex: 1;
       display: flex;
@@ -74,12 +90,12 @@
       text-align: center;
     }
     .avatar {
-      width: 45px; height: 45px; border-radius: 50%;
+      width: 40px; height: 40px; border-radius: 50%;
       background: radial-gradient(circle, #00bcd4, #006064);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1.3rem; box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
+      font-size: 1.2rem; box-shadow: 0 0 10px rgba(0, 188, 212, 0.4);
     }
-    .avatar-title { font-size: 0.7rem; color: #00bcd4; margin-top: 2px; }
+    .avatar-title { font-size: 0.65rem; color: #00bcd4; margin-top: 2px; }
 
     .chat {
       flex: 1;
@@ -149,12 +165,14 @@
 </head>
 <body>
   <header>
-    <h1>🎓 أكاديمية المهن والتعليم الذكي</h1>
-    <p>منصة 3D Axis العالمية - تعلم أي مهنة أو مهارة</p>
+    <div>
+      <h1>🎓 أكاديمية المهن والتعليم الذكي</h1>
+      <p>منصة 3D Axis العالمية</p>
+    </div>
+    <button class="btn-sound" onclick="toggleSpeech()" id="soundBtn">🔊 كتم الصوت</button>
   </header>
   
   <div class="container">
-    <!-- مرحلة السبورة والأفتار بشكل مدمج ومناسب للجوال -->
     <div class="stage">
       <div class="board" id="boardText">📖 السبورة الافتراضية: اكتب المهنة أو المهارة التي تود تعلمها وسيقوم المعلم بتفصيلها لك...</div>
       <div class="avatar-box">
@@ -163,7 +181,6 @@
       </div>
     </div>
     
-    <!-- قسم المحادثة وصندوق الكتابة الظاهر بوضوح -->
     <div class="chat">
       <div class="messages" id="messages"></div>
       <div class="input-area">
@@ -178,7 +195,23 @@
   </footer>
 
   <script>
+    let isSpeechEnabled = true;
     const messagesDiv = document.getElementById("messages");
+
+    function toggleSpeech() {
+      isSpeechEnabled = !isSpeechEnabled;
+      const btn = document.getElementById("soundBtn");
+      if (isSpeechEnabled) {
+        btn.textContent = "🔊 كتم الصوت";
+        btn.style.borderColor = "#00bcd4";
+      } else {
+        btn.textContent = "🔇 تشغيل الصوت";
+        btn.style.borderColor = "#e11d48";
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
+      }
+    }
 
     function addMessage(text, sender, extraClass="") {
       const msg = document.createElement("div");
@@ -200,7 +233,7 @@
 
       const thinkingMsg = addMessage("جاري إعداد الدرس وخطوات التعلم...", "ai", "thinking");
 
-      const promptText = `أنت معلم وقائد مهني افتراضي خبير وودود تعمل في منصة 3D Axis التعليمية. مهمتك هي تعليم المهن، الحرف، والمهارات التقنية والعلمية للطلاب والشباب بطريقة مبسطة، عملية، وجذابة باللغة العربية. قدم إجابة منظمة تتضمن: 1. نظرة عامة على المهنة. 2. خطوات التعلم العملية خطوة بخطوة. 3. أدوات ومصادر هامة للبدء. سؤال المستخدم أو المهنة المطلوبة هي: "${text}"`;
+      const promptText = `أنت معلم وقائد مهني افتراضي خبير وودود تعمل في منصة 3D Axis التعليمية. مهمتك هي تعليم المهن، الحرف، والمهارات التقنية للطلاب والشباب بطريقة مبسطة، عملية، وجذابة باللغة العربية. قدم إجابة منظمة تتضمن: 1. نظرة عامة على المهنة. 2. خطوات التعلم العملية خطوة بخطوة. 3. أدوات ومصادر هامة للبدء. سؤال المستخدم أو المهنة المطلوبة هي: "${text}"`;
 
       try {
         const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}`);
@@ -234,9 +267,19 @@
     };
 
     function speak(text) {
+      if (!isSpeechEnabled) return;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
+        
+        // تنظيف النص تماماً من رموز الجداول والشرطات والتنسيقات لكي لا يقرأها الصوت
+        const cleanText = text
+          .replace(/\|/g, ' ')
+          .replace(/[-*#_`~–—]/g, ' ')
+          .replace(/\[.*?\]\(.*?\)/g, '')
+          .replace(/\s+/g, ' ')
+          .trim();
+
+        const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.lang = "ar-SA";
         utterance.rate = 0.95;
         window.speechSynthesis.speak(utterance);
