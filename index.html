@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>أكاديمية المهن والتعليم الذكي - 3D Axis</title>
-  <!-- مكتبة html2pdf لتصدير الدرس كـ PDF بلمسة واحدة أوفلاين -->
+  <!-- مكتبة html2pdf لتصدير الدرس كـ ملف PDF احترافي -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     :root {
@@ -299,35 +299,58 @@
       recognition.start();
     }
 
-    // دالة تصدير المحادثة والدرس كـ PDF
+    // دالة محسنة ومصححة لتصدير الدرس كملف PDF بخلفية بيضاء ووضوح تام للنص
     function exportPDF() {
-      if (!messagesDiv.children.length) {
-        alert("لا توجد دروس حالية لتصديرها!");
+      const aiMessages = document.querySelectorAll(".message.ai");
+      if (aiMessages.length === 0) {
+        alert("لا توجد دروس أو إجابات حالية لتصديرها!");
         return;
       }
+
+      // بناء عنصر نظيف مخصص للطباعة بوضوح عالي
       const element = document.createElement("div");
-      element.style.padding = "20px";
+      element.style.padding = "25px";
       element.style.fontFamily = "Tahoma, sans-serif";
       element.style.direction = "rtl";
-      element.style.color = "#000";
-      
+      element.style.backgroundColor = "#ffffff";
+      element.style.color = "#111111";
+      element.style.lineHeight = "1.6";
+
       const title = document.createElement("h2");
       title.textContent = `دليل درس مهنة: ${lastProfession || 'التعليم المهني'} - منصة 3D Axis`;
       title.style.color = "#00838f";
       title.style.borderBottom = "2px solid #00838f";
       title.style.paddingBottom = "10px";
+      title.style.marginBottom = "20px";
       element.appendChild(title);
 
-      const content = messagesDiv.cloneNode(true);
-      content.style.background = "#fff";
-      content.style.color = "#000";
-      element.appendChild(content);
+      // جمع ردود المعلم الذكي فقط ووضعها بوضوح في الملف
+      aiMessages.forEach((msg, index) => {
+        const p = document.createElement("div");
+        p.style.marginBottom = "15px";
+        p.style.padding = "10px";
+        p.style.background = "#f9f9f9";
+        p.style.borderRight = "4px solid #00bcd4";
+        p.style.borderRadius = "4px";
+        p.style.whiteSpace = "pre-wrap";
+        p.style.fontSize = "14px";
+        p.textContent = msg.textContent;
+        element.appendChild(p);
+      });
+
+      const footerNode = document.createElement("div");
+      footerNode.style.marginTop = "30px";
+      footerNode.style.textAlign = "center";
+      footerNode.style.fontSize = "12px";
+      footerNode.style.color = "#666";
+      footerNode.textContent = "تم الانتاج والإعداد من منصة 3D Axis التعليمية | الأستاذ عمر حسان عبره";
+      element.appendChild(footerNode);
 
       const opt = {
         margin:       10,
         filename:     `درس_${lastProfession || '3D_Axis'}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
+        html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
