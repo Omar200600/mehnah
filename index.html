@@ -254,8 +254,8 @@
       input.value = "";
 
       let promptText = "";
-      if (text.length < 20 && lastProfession && (text.includes("اكمل") || text.includes("تابع") || text.includes("أكمل") || text.includes("تفصيل") || text.includes("شكرا"))) {
-        promptText = `بخصوص مهنة أو مهارة ${lastProfession} في منصة 3D Axis، قدم تفاصيل أعمق وأمثلة عملية إضافية وخطوات تقنية متقدمة باللغة العربية.`;
+      if (text.length < 25 && lastProfession && (text.includes("اكمل") || text.includes("تابع") || text.includes("أكمل") || text.includes("تفصيل") || text.includes("أمس") || text.includes("درس"))) {
+        promptText = `بخصوص متابعة درس أو مهنة ${lastProfession} في منصة 3D Axis، قدم فصولاً مبسطة جديدة، خطوات عملية متقدمة، وأمثلة تدريبية باللغة العربية.`;
       } else {
         lastProfession = text;
         promptText = `أنت معلم وقائد مهني افتراضي خبير وودود تعمل في منصة 3D Axis التعليمية. مهمتك هي تعليم المهن، الحرف، والمهارات التقنية للشباب بطريقة مبسطة، عملية، وجذابة باللغة العربية. قدم إجابة منظمة تتضمن: 1. نظرة عامة شاملة على المهنة. 2. خطوات التعلم العملية خطوة بخطوة. 3. أدوات ومصادر هامة. 4. اقترح في النهاية روابط فيديو تعليمية أو كلمات بحث يوتيوب مقترحة للتعلم المرئي. المجال أو المهنة المطلوبة هي: "${text}"`;
@@ -299,7 +299,6 @@
       recognition.start();
     }
 
-    // دالة محسنة ومصححة لتصدير الدرس كملف PDF بخلفية بيضاء ووضوح تام للنص
     function exportPDF() {
       const aiMessages = document.querySelectorAll(".message.ai");
       if (aiMessages.length === 0) {
@@ -307,7 +306,6 @@
         return;
       }
 
-      // بناء عنصر نظيف مخصص للطباعة بوضوح عالي
       const element = document.createElement("div");
       element.style.padding = "25px";
       element.style.fontFamily = "Tahoma, sans-serif";
@@ -324,8 +322,7 @@
       title.style.marginBottom = "20px";
       element.appendChild(title);
 
-      // جمع ردود المعلم الذكي فقط ووضعها بوضوح في الملف
-      aiMessages.forEach((msg, index) => {
+      aiMessages.forEach((msg) => {
         const p = document.createElement("div");
         p.style.marginBottom = "15px";
         p.style.padding = "10px";
