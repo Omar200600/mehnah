@@ -13,176 +13,141 @@
       --bg-dark: #121212;
       --card-bg: #1e1e1e;
       --border-color: #00bcd4;
+      --sidebar-width: 250px;
     }
+    * { box-sizing: border-box; }
     html, body {
-      margin: 0;
-      padding: 0;
-      height: 100%;
+      margin: 0; padding: 0; height: 100%;
       background-color: var(--bg-dark);
-      color: #f0f0f0;
-      font-family: "Tahoma", sans-serif;
+      color: #f0f0f0; font-family: "Tahoma", sans-serif;
       overflow: hidden;
     }
-    body {
-      display: flex;
-      flex-direction: column;
-    }
+    body { display: flex; flex-direction: column; }
+    
     header {
-      background: var(--card-bg);
-      padding: 6px 10px;
-      text-align: center;
-      border-bottom: 2px solid var(--border-color);
-      flex-shrink: 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      background: var(--card-bg); padding: 8px 12px;
+      text-align: center; border-bottom: 2px solid var(--border-color);
+      flex-shrink: 0; display: flex; justify-content: space-between; align-items: center;
     }
     header div h1 { margin: 0; font-size: 1.1rem; color: var(--primary-color); }
     header div p { margin: 1px 0 0 0; font-size: 0.65rem; color: #aaa; }
     
-    .header-btns {
-      display: flex;
-      gap: 5px;
-    }
+    .header-btns { display: flex; gap: 6px; }
     .btn-tool {
-      background: #263238;
-      border: 1px solid var(--primary-color);
-      color: var(--primary-color);
-      padding: 4px 7px;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 0.7rem;
-      font-weight: bold;
+      background: #263238; border: 1px solid var(--primary-color);
+      color: var(--primary-color); padding: 5px 9px; border-radius: 5px;
+      cursor: pointer; font-size: 0.75rem; font-weight: bold;
+    }
+    .btn-tool:hover { background: #00838f; color: #fff; }
+
+    /* Layout Wrapper */
+    .app-body {
+      flex: 1; display: flex; overflow: hidden; position: relative;
     }
 
+    /* Sidebar For Saved Careers / Sessions */
+    .sidebar {
+      width: var(--sidebar-width); background: #181818;
+      border-left: 1px solid #333; display: flex; flex-direction: column;
+      padding: 8px; transition: transform 0.3s ease; flex-shrink: 0;
+    }
+    .sidebar-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #333;
+    }
+    .btn-new-chat {
+      width: 100%; background: var(--primary-color); color: #000;
+      border: none; padding: 8px; border-radius: 6px; font-weight: bold;
+      cursor: pointer; margin-bottom: 10px; font-size: 0.8rem;
+    }
+    .sessions-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+    .session-item {
+      padding: 8px 10px; background: #242424; border-radius: 6px; cursor: pointer;
+      font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center;
+      border: 1px solid transparent; transition: all 0.2s;
+    }
+    .session-item:hover, .session-item.active {
+      border-color: var(--primary-color); background: #1c2b30; color: var(--primary-color);
+    }
+    .session-item span.title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+    .btn-del-session { color: #ff5252; background: none; border: none; cursor: pointer; font-size: 0.8rem; }
+
+    /* Main Content Container */
     .container {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      padding: 6px;
-      gap: 6px;
+      flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 8px; gap: 8px;
     }
     
     .stage {
-      background: #1a1a1a;
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 6px;
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      background: #1a1a1a; border: 1px solid var(--border-color);
+      border-radius: 8px; padding: 8px; display: flex; flex-direction: row;
+      align-items: center; gap: 10px; flex-shrink: 0;
     }
     .board {
-      flex: 1;
-      background: #1c2833;
-      border: 1px solid var(--primary-color);
-      border-radius: 6px;
-      padding: 6px;
-      font-size: 0.8rem;
-      color: #a1efef;
-      height: 50px;
-      overflow-y: auto;
-      line-height: 1.3;
+      flex: 1; background: #1c2833; border: 1px solid var(--primary-color);
+      border-radius: 6px; padding: 6px 10px; font-size: 0.8rem; color: #a1efef;
+      height: 48px; overflow-y: auto; line-height: 1.3;
     }
-    .avatar-box {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }
+    .avatar-box { display: flex; flex-direction: column; align-items: center; text-align: center; }
     .avatar {
-      width: 32px; height: 32px; border-radius: 50%;
+      width: 36px; height: 36px; border-radius: 50%;
       background: radial-gradient(circle, #00bcd4, #006064);
       display: flex; align-items: center; justify-content: center;
-      font-size: 1rem; box-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
+      font-size: 1.1rem; box-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
     }
-    .avatar-title { font-size: 0.6rem; color: var(--primary-color); margin-top: 2px; }
+    .avatar-title { font-size: 0.65rem; color: var(--primary-color); margin-top: 2px; }
 
     .chat {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      background: var(--card-bg);
-      border: 1px solid rgba(0, 188, 212, 0.3);
-      border-radius: 8px;
-      padding: 6px;
-      overflow: hidden;
+      flex: 1; display: flex; flex-direction: column;
+      background: var(--card-bg); border: 1px solid rgba(0, 188, 212, 0.3);
+      border-radius: 8px; padding: 8px; overflow: hidden;
     }
     .messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 4px;
-      background: #161616;
-      border-radius: 6px;
-      margin-bottom: 6px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
+      flex: 1; overflow-y: auto; padding: 6px; background: #161616;
+      border-radius: 6px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;
     }
     .message {
-      padding: 7px 9px; border-radius: 6px;
-      max-width: 88%; word-wrap: break-word; line-height: 1.4; font-size: 0.8rem;
+      padding: 8px 12px; border-radius: 8px;
+      max-width: 88%; word-wrap: break-word; line-height: 1.5; font-size: 0.85rem;
       white-space: pre-wrap;
     }
-    .ai { background: rgba(0, 188, 212, 0.15); color: #e0f7fa; border: 1px solid rgba(0, 188, 212, 0.3); align-self: flex-start; }
+    .ai { background: rgba(0, 188, 212, 0.12); color: #e0f7fa; border: 1px solid rgba(0, 188, 212, 0.3); align-self: flex-start; }
     .user { background: #263238; color: #fff; border: 1px solid #37474f; align-self: flex-end; }
     .thinking { font-style: italic; color: #00bcd4; }
     
-    .input-area {
-      display: flex;
-      gap: 4px;
-      flex-shrink: 0;
+    .quick-actions { display: flex; gap: 6px; margin-bottom: 6px; overflow-x: auto; }
+    .btn-quick {
+      background: #1c2b30; border: 1px solid var(--primary-color); color: #e0f7fa;
+      padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; white-space: nowrap;
     }
+
+    .input-area { display: flex; gap: 6px; flex-shrink: 0; }
     .input-area input {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid var(--primary-color);
-      border-radius: 6px;
-      background: #222;
-      color: #fff;
-      font-size: 0.85rem;
-      outline: none;
+      flex: 1; padding: 9px; border: 1px solid var(--primary-color);
+      border-radius: 6px; background: #222; color: #fff; font-size: 0.85rem; outline: none;
     }
     .btn-action-send {
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      background: var(--primary-color);
-      color: #000;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.85rem;
+      padding: 9px 14px; border: none; border-radius: 6px;
+      background: var(--primary-color); color: #000; font-weight: bold; cursor: pointer; font-size: 0.85rem;
     }
     .btn-action-mic {
-      padding: 8px 10px;
-      border: none;
-      border-radius: 6px;
-      background: #e11d48;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 0.85rem;
+      padding: 9px 11px; border: none; border-radius: 6px;
+      background: #e11d48; color: #fff; font-weight: bold; cursor: pointer; font-size: 0.85rem;
     }
     
     footer {
-      text-align: center;
-      padding: 4px;
-      background: #0d0d0d;
-      font-size: 0.7rem;
-      color: #888;
-      border-top: 1px solid #222;
-      flex-shrink: 0;
+      text-align: center; padding: 5px; background: #0d0d0d;
+      font-size: 0.7rem; color: #888; border-top: 1px solid #222; flex-shrink: 0;
     }
   </style>
 </head>
 <body>
   <header>
-    <div>
-      <h1>🎓 أكاديمية المهن - 3D Axis</h1>
-      <p>منصة التعليم والتدريب الذكي</p>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button class="btn-tool" onclick="toggleSidebar()" title="سجل المهن والدروس">📁 المهن المحفوظة</button>
+      <div>
+        <h1>🎓 أكاديمية المهن - 3D Axis</h1>
+        <p>منصة التعليم والتدريب الذكي والتحاور المباشر</p>
+      </div>
     </div>
     <div class="header-btns">
       <button class="btn-tool" onclick="exportPDF()" title="تنزيل الدرس الحالي كملف PDF">📄 تصدير PDF</button>
@@ -190,21 +155,40 @@
     </div>
   </header>
   
-  <div class="container">
-    <div class="stage">
-      <div class="board" id="boardText">📖 السبورة الافتراضية: اكتب المهنة أو المهارة أو استخدم الميكروفون للصوت...</div>
-      <div class="avatar-box">
-        <div class="avatar">👨‍🏫</div>
-        <div class="avatar-title">المعلم المهني</div>
+  <div class="app-body">
+    <!-- Sidebar for Career Sessions -->
+    <div class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span style="font-size:0.85rem; font-weight:bold; color:var(--primary-color)">🗂️ سجل المهن التعلمية</span>
       </div>
+      <button class="btn-new-chat" onclick="createNewSession()">➕ بدأ تعلم مهنة جديدة</button>
+      <div class="sessions-list" id="sessionsList"></div>
     </div>
-    
-    <div class="chat">
-      <div class="messages" id="messages"></div>
-      <div class="input-area">
-        <input type="text" id="userInput" placeholder="اكتب أو انقر الميكروفون..." onkeypress="handleKeyPress(event)">
-        <button class="btn-action-mic" onclick="startVoiceInput()" title="تحدث بصوتك">🎙️</button>
-        <button class="btn-action-send" onclick="sendMessage()">إرسال</button>
+
+    <!-- Main Content Area -->
+    <div class="container">
+      <div class="stage">
+        <div class="board" id="boardText">📖 السبورة الافتراضية: اكتب المهنة أو المهارة للبدء في مسار عملي تفاعلي...</div>
+        <div class="avatar-box">
+          <div class="avatar">👨‍🏫</div>
+          <div class="avatar-title">المعلم المهني</div>
+        </div>
+      </div>
+      
+      <div class="chat">
+        <div class="messages" id="messages"></div>
+        
+        <div class="quick-actions" id="quickActions">
+          <button class="btn-quick" onclick="sendQuickText('الخطوة التالية من فضلك ➡️')">الخطوة التالية ➡️</button>
+          <button class="btn-quick" onclick="sendQuickText('أعطني مثالاً عملياً أو عطلاً شائعاً 🤔')">مثال عملي / عطل 🤔</button>
+          <button class="btn-quick" onclick="sendQuickText('كرر أو وضح هذه الجزء بأسلوب أبسط 🔄')">توضيح أبسط 🔄</button>
+        </div>
+
+        <div class="input-area">
+          <input type="text" id="userInput" placeholder="اكتب ردك أو سؤالك هنا..." onkeypress="handleKeyPress(event)">
+          <button class="btn-action-mic" onclick="startVoiceInput()" title="تحدث بصوتك">🎙️</button>
+          <button class="btn-action-send" onclick="sendMessage()">إرسال</button>
+        </div>
       </div>
     </div>
   </div>
@@ -215,8 +199,31 @@
 
   <script>
     let isSpeechEnabled = true;
-    let lastProfession = ""; 
+    let sessions = [];
+    let currentSessionId = null;
+    const SYSTEM_PROMPT = `أنت "المعلم المهني الافتراضي" لـ منصة 3D Axis.
+تتميز بالآتي:
+1. إنسان آلي تفاعلي ودود ومباشر، تأخذ وتعطي في الكلام مع المستأجر أو الطالب وتتجاوب بحيوية.
+2. تشرح المهن خطوة بخطوة بطريقة سلسة وتفاعلية جداً (لا تشرح كل المنهج في رد واحد!).
+3. عند تحديد المستأجر/الطالب لمهنة معينة: ترحب به بحماس، وتغطّي المرحلة الأساسية الأولى فقط ثم تطرح عليه سؤالاً تفاعلياً، أو تطلب منه تأكيد جاهزيته للانتقال للخطوة التالية.
+4. ترتبط ردودك دائماً بالأجوبة السابقة والمجال الحالي دون الانفصال عن السياق.
+5. لغتك: عربية فصيحة، مبسطة، وعملية موجهة للشباب.`;
+
     const messagesDiv = document.getElementById("messages");
+
+    window.onload = () => {
+      loadSessions();
+      if (sessions.length === 0) {
+        createNewSession();
+      } else {
+        switchSession(sessions[0].id);
+      }
+    };
+
+    function toggleSidebar() {
+      const sb = document.getElementById("sidebar");
+      sb.style.display = (sb.style.display === "none") ? "flex" : "none";
+    }
 
     function toggleSpeech() {
       isSpeechEnabled = !isSpeechEnabled;
@@ -229,13 +236,90 @@
         btn.textContent = "🔇 تشغيل";
         btn.style.borderColor = "#e11d48";
         btn.style.background = "#4c0519";
-        if ('speechSynthesis' in window) {
-          window.speechSynthesis.cancel();
-        }
+        if ('speechSynthesis' in window) window.speechSynthesis.cancel();
       }
     }
 
-    function addMessage(text, sender, extraClass="") {
+    /* LocalStorage Management for Multiple Careers */
+    function loadSessions() {
+      const saved = localStorage.getItem("3daxis_career_sessions");
+      if (saved) {
+        try { sessions = JSON.parse(saved); } catch(e) { sessions = []; }
+      }
+      renderSessionsList();
+    }
+
+    function saveSessions() {
+      localStorage.setItem("3daxis_career_sessions", JSON.stringify(sessions));
+      renderSessionsList();
+    }
+
+    function createNewSession() {
+      const newId = "sess_" + Date.now();
+      const newSession = {
+        id: newId,
+        title: "مهنة جديدة",
+        messages: [
+          { role: "ai", text: "مرحباً بك في أكاديمية المهن منصة 3D Axis! 🎓\nأنا المعلم المهني. ما هي المهنة أو المهارة التي تحلم بإتقانها اليوم؟ (مثال: صيانة اللابتوب، برمجة الويب، الخياطة...)" }
+        ]
+      };
+      sessions.unshift(newSession);
+      saveSessions();
+      switchSession(newId);
+    }
+
+    function switchSession(id) {
+      currentSessionId = id;
+      const session = sessions.find(s => s.id === id);
+      if (!session) return;
+
+      messagesDiv.innerHTML = "";
+      session.messages.forEach(msg => {
+        addMessageUI(msg.text, msg.role);
+      });
+      renderSessionsList();
+      
+      const lastAiMsg = [...session.messages].reverse().find(m => m.role === 'ai');
+      if (lastAiMsg) {
+        document.getElementById("boardText").textContent = "📖 السبورة: " + lastAiMsg.text.substring(0, 90) + "...";
+      }
+    }
+
+    function deleteSession(id, e) {
+      e.stopPropagation();
+      sessions = sessions.filter(s => s.id !== id);
+      saveSessions();
+      if (sessions.length > 0) {
+        switchSession(sessions[0].id);
+      } else {
+        createNewSession();
+      }
+    }
+
+    function renderSessionsList() {
+      const listContainer = document.getElementById("sessionsList");
+      listContainer.innerHTML = "";
+      sessions.forEach(s => {
+        const item = document.createElement("div");
+        item.className = "session-item" + (s.id === currentSessionId ? " active" : "");
+        item.onclick = () => switchSession(s.id);
+
+        const title = document.createElement("span");
+        title.className = "title";
+        title.textContent = s.title;
+
+        const delBtn = document.createElement("button");
+        delBtn.className = "btn-del-session";
+        delBtn.innerHTML = "✖";
+        delBtn.onclick = (e) => deleteSession(s.id, e);
+
+        item.appendChild(title);
+        item.appendChild(delBtn);
+        listContainer.appendChild(item);
+      });
+    }
+
+    function addMessageUI(text, sender, extraClass="") {
       const msg = document.createElement("div");
       msg.classList.add("message", sender);
       if(extraClass) msg.classList.add(extraClass);
@@ -245,40 +329,58 @@
       return msg;
     }
 
+    function sendQuickText(text) {
+      document.getElementById("userInput").value = text;
+      sendMessage();
+    }
+
     async function sendMessage() {
       const input = document.getElementById("userInput");
-      let text = input.value.trim();
-      if(!text) return;
+      let userText = input.value.trim();
+      if(!userText || !currentSessionId) return;
 
-      addMessage(text, "user");
+      const activeSession = sessions.find(s => s.id === currentSessionId);
+      if(!activeSession) return;
+
+      // أضف رسالة المستخدم
+      activeSession.messages.push({ role: "user", text: userText });
+      addMessageUI(userText, "user");
       input.value = "";
 
-      let promptText = "";
-      if (text.length < 25 && lastProfession && (text.includes("اكمل") || text.includes("تابع") || text.includes("أكمل") || text.includes("تفصيل") || text.includes("أمس") || text.includes("درس"))) {
-        promptText = `بخصوص متابعة درس أو مهنة ${lastProfession} في منصة 3D Axis، قدم فصولاً مبسطة جديدة، خطوات عملية متقدمة، وأمثلة تدريبية باللغة العربية.`;
-      } else {
-        lastProfession = text;
-        promptText = `أنت معلم وقائد مهني افتراضي خبير وودود تعمل في منصة 3D Axis التعليمية. مهمتك هي تعليم المهن، الحرف، والمهارات التقنية للشباب بطريقة مبسطة، عملية، وجذابة باللغة العربية. قدم إجابة منظمة تتضمن: 1. نظرة عامة شاملة على المهنة. 2. خطوات التعلم العملية خطوة بخطوة. 3. أدوات ومصادر هامة. 4. اقترح في النهاية روابط فيديو تعليمية أو كلمات بحث يوتيوب مقترحة للتعلم المرئي. المجال أو المهنة المطلوبة هي: "${text}"`;
+      // تعديل عنوان الجلسة لو كانت جديدة
+      if (activeSession.title === "مهنة جديدة" && activeSession.messages.length <= 3) {
+        activeSession.title = userText.substring(0, 20);
       }
+      saveSessions();
 
-      const thinkingMsg = addMessage("جاري إعداد الدرس وخطوات التعلم وروابط الفيديو...", "ai", "thinking");
+      const thinkingMsg = addMessageUI("المعلم المهني يفكر ويكتب لك الرد...", "ai", "thinking");
+
+      // إعداد سياق المحادثة الكاملة
+      let conversationHistory = SYSTEM_PROMPT + "\n\n---\nسجل المحادثة السابقة بين المعلم والطالب:\n";
+      activeSession.messages.forEach(m => {
+        conversationHistory += (m.role === 'user' ? "الطالب: " : "المعلم: ") + m.text + "\n";
+      });
+      conversationHistory += "المعلم: (رد على الطالب بأسلوب تفاعلي، مشجع، واستكمل الخطوة السابقة دون تكرار العامة):";
 
       try {
-        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}`);
+        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(conversationHistory)}`);
         thinkingMsg.remove();
 
         if (response.ok) {
           const aiReply = await response.text();
-          addMessage(aiReply, "ai");
-          document.getElementById("boardText").textContent = aiReply.substring(0, 100) + "...";
+          activeSession.messages.push({ role: "ai", text: aiReply });
+          saveSessions();
+
+          addMessageUI(aiReply, "ai");
+          document.getElementById("boardText").textContent = "📖 السبورة: " + aiReply.substring(0, 90) + "...";
           speak(aiReply);
         } else {
-          addMessage("⚠️ عذراً، حدث ضغط مؤقت في الخادم. حاول مرة أخرى.", "ai");
+          addMessageUI("⚠️ عذراً، حدث ضغط مؤقت في الخادم. حاول مرة أخرى.", "ai");
         }
       } catch(error) {
         console.error(error);
         thinkingMsg.remove();
-        addMessage("⚠️ عذراً، حدث خطأ في الاتصال بالشبكة.", "ai");
+        addMessageUI("⚠️ عذراً، حدث خطأ في الاتصال بالشبكة.", "ai");
       }
     }
 
@@ -290,7 +392,6 @@
       }
       const recognition = new SpeechRecognition();
       recognition.lang = 'ar-SA';
-      
       recognition.onresult = function(event) {
         const text = event.results[0][0].transcript;
         document.getElementById('userInput').value = text;
@@ -300,9 +401,9 @@
     }
 
     function exportPDF() {
-      const aiMessages = document.querySelectorAll(".message.ai");
-      if (aiMessages.length === 0) {
-        alert("لا توجد دروس أو إجابات حالية لتصديرها!");
+      const activeSession = sessions.find(s => s.id === currentSessionId);
+      if (!activeSession || activeSession.messages.length <= 1) {
+        alert("لا توجد دروس حالية في هذه المهنة لتصديرها!");
         return;
       }
 
@@ -315,23 +416,23 @@
       element.style.lineHeight = "1.6";
 
       const title = document.createElement("h2");
-      title.textContent = `دليل درس مهنة: ${lastProfession || 'التعليم المهني'} - منصة 3D Axis`;
+      title.textContent = `دليل درس مهنة: ${activeSession.title} - منصة 3D Axis`;
       title.style.color = "#00838f";
       title.style.borderBottom = "2px solid #00838f";
       title.style.paddingBottom = "10px";
       title.style.marginBottom = "20px";
       element.appendChild(title);
 
-      aiMessages.forEach((msg) => {
+      activeSession.messages.forEach((msg) => {
         const p = document.createElement("div");
         p.style.marginBottom = "15px";
         p.style.padding = "10px";
-        p.style.background = "#f9f9f9";
-        p.style.borderRight = "4px solid #00bcd4";
+        p.style.background = msg.role === 'ai' ? "#f0f8ff" : "#eef2f5";
+        p.style.borderRight = msg.role === 'ai' ? "4px solid #00bcd4" : "4px solid #78909c";
         p.style.borderRadius = "4px";
         p.style.whiteSpace = "pre-wrap";
         p.style.fontSize = "14px";
-        p.textContent = msg.textContent;
+        p.innerHTML = `<strong>${msg.role === 'ai' ? '👨‍🏫 المعلم المهني:' : '👤 المستأجر/الطالب:'}</strong><br>${msg.text}`;
         element.appendChild(p);
       });
 
@@ -345,7 +446,7 @@
 
       const opt = {
         margin:       10,
-        filename:     `درس_${lastProfession || '3D_Axis'}.pdf`,
+        filename:     `درس_${activeSession.title}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
@@ -355,29 +456,14 @@
     }
 
     function handleKeyPress(event) {
-      if (event.key === "Enter") {
-        sendMessage();
-      }
+      if (event.key === "Enter") sendMessage();
     }
-
-    window.onload = () => {
-      const welcome = "مرحباً بك في أكاديمية المهن والتعليم الذكي داخل منصة 3D Axis. ما هي المهنة أو المهارة التي تود إتقانها اليوم؟";
-      addMessage(welcome, "ai");
-      speak(welcome);
-    };
 
     function speak(text) {
       if (!isSpeechEnabled) return;
       if ('speechSynthesis' in window) {
         window.speechSynthesis.cancel();
-        
-        const cleanText = text
-          .replace(/\|/g, ' ')
-          .replace(/[-*#_`~–—]/g, ' ')
-          .replace(/\[.*?\]\(.*?\)/g, '')
-          .replace(/\s+/g, ' ')
-          .trim();
-
+        const cleanText = text.replace(/\|/g, ' ').replace(/[-*#_`~–—]/g, ' ').replace(/\s+/g, ' ').trim();
         const utterance = new SpeechSynthesisUtterance(cleanText);
         utterance.lang = "ar-SA";
         utterance.rate = 0.95;
