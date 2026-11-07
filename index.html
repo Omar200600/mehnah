@@ -33,11 +33,11 @@
     header div h1 { margin: 0; font-size: 1.1rem; color: var(--primary-color); }
     header div p { margin: 1px 0 0 0; font-size: 0.65rem; color: #aaa; }
     
-    .header-btns { display: flex; gap: 6px; }
+    .header-btns { display: flex; gap: 5px; flex-wrap: wrap; }
     .btn-tool {
       background: #263238; border: 1px solid var(--primary-color);
-      color: var(--primary-color); padding: 5px 9px; border-radius: 5px;
-      cursor: pointer; font-size: 0.75rem; font-weight: bold;
+      color: var(--primary-color); padding: 4px 8px; border-radius: 5px;
+      cursor: pointer; font-size: 0.7rem; font-weight: bold;
     }
     .btn-tool:hover { background: #00838f; color: #fff; }
 
@@ -83,12 +83,12 @@
 
     /* Main Content Container */
     .container {
-      flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 8px; gap: 8px; width: 100%;
+      flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 8px; gap: 6px; width: 100%;
     }
     
     .stage {
       background: #1a1a1a; border: 1px solid var(--border-color);
-      border-radius: 8px; padding: 8px; display: flex; flex-direction: row;
+      border-radius: 8px; padding: 6px 8px; display: flex; flex-direction: row;
       align-items: center; gap: 10px; flex-shrink: 0;
     }
     .board {
@@ -102,8 +102,15 @@
       background: radial-gradient(circle, #00bcd4, #006064);
       display: flex; align-items: center; justify-content: center;
       font-size: 1.1rem; box-shadow: 0 0 8px rgba(0, 188, 212, 0.4);
+      position: relative;
     }
-    .avatar-title { font-size: 0.65rem; color: var(--primary-color); margin-top: 2px; }
+    /* مؤشر الحالة الحية للأفتار */
+    .avatar::after {
+      content: ''; position: absolute; bottom: 0; right: 0;
+      width: 10px; height: 10px; background: #00e676; border-radius: 50%;
+      border: 2px solid #121212;
+    }
+    .avatar-title { font-size: 0.62rem; color: var(--primary-color); margin-top: 2px; }
 
     .chat {
       flex: 1; display: flex; flex-direction: column;
@@ -112,7 +119,7 @@
     }
     .messages {
       flex: 1; overflow-y: auto; padding: 6px; background: #161616;
-      border-radius: 6px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;
+      border-radius: 6px; margin-bottom: 6px; display: flex; flex-direction: column; gap: 8px;
     }
     .message {
       padding: 8px 12px; border-radius: 8px;
@@ -123,12 +130,15 @@
     .user { background: #263238; color: #fff; border: 1px solid #37474f; align-self: flex-end; }
     .thinking { font-style: italic; color: #00bcd4; }
     
-    .quick-actions { display: flex; gap: 6px; margin-bottom: 6px; overflow-x: auto; padding-bottom: 2px; }
+    /* شريط الأدوات السريعة و 3D Axis */
+    .quick-actions { display: flex; gap: 5px; margin-bottom: 5px; overflow-x: auto; padding-bottom: 2px; }
     .btn-quick {
       background: #1c2b30; border: 1px solid var(--primary-color); color: #e0f7fa;
-      padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; cursor: pointer; white-space: nowrap;
+      padding: 4px 8px; border-radius: 4px; font-size: 0.73rem; cursor: pointer; white-space: nowrap;
     }
     .btn-quick:hover { background: var(--primary-color); color: #000; }
+    .btn-3d-action { background: #2e1a47; border-color: #ab47bc; color: #e1bee7; }
+    .btn-3d-action:hover { background: #ab47bc; color: #fff; }
 
     .input-area { display: flex; gap: 6px; flex-shrink: 0; }
     .input-area input {
@@ -145,14 +155,14 @@
     }
     
     footer {
-      text-align: center; padding: 5px; background: #0d0d0d;
+      text-align: center; padding: 4px; background: #0d0d0d;
       font-size: 0.7rem; color: #888; border-top: 1px solid #222; flex-shrink: 0;
     }
   </style>
 </head>
 <body>
   <header>
-    <div style="display: flex; align-items: center; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
       <button class="btn-tool" onclick="toggleSidebar()" title="سجل المهن والدروس المحفوظة">📁 المهن المحفوظة</button>
       <div>
         <h1>🎓 أكاديمية المهن - 3D Axis</h1>
@@ -160,7 +170,8 @@
       </div>
     </div>
     <div class="header-btns">
-      <button class="btn-tool" onclick="exportPDF()" title="تنزيل الدرس الحالي كملف PDF">📄 تصدير PDF</button>
+      <button class="btn-tool" onclick="exportBackup()" title="نسخ احتياطي للدروس">💾 حفظ البيانات</button>
+      <button class="btn-tool" onclick="exportPDF()" title="تنزيل الدرس الحالي كملف PDF">📄 PDF</button>
       <button class="btn-tool" onclick="toggleSpeech()" id="soundBtn">🔊 كتم</button>
     </div>
   </header>
@@ -169,17 +180,17 @@
     <!-- Sidebar for Career Sessions -->
     <div class="sidebar" id="sidebar">
       <div class="sidebar-header">
-        <span style="font-size:0.9rem; font-weight:bold; color:var(--primary-color)">🗂️ سجل المهن التعلمية</span>
+        <span style="font-size:0.9rem; font-weight:bold; color:var(--primary-color)">🗂️ سجل المهن التعليمية</span>
         <button class="btn-close-sidebar" onclick="toggleSidebar()">✖</button>
       </div>
       <button class="btn-new-chat" onclick="createNewSession()">➕ بدأ تعلم مهنة جديدة</button>
       <div class="sessions-list" id="sessionsList"></div>
     </div>
 
-    <!-- Main Content Area -->
+    <!-- Main Content Container -->
     <div class="container">
       <div class="stage">
-        <div class="board" id="boardText">📖 السبورة الافتراضية: اكتب المهنة أو المهارة للبدء في مسار عملي تفاعلي...</div>
+        <div class="board" id="boardText">📖 سبورة 3D Axis: مرحباً بك في بيئة التحاور الذكي، اختر مهنتك وابدأ الإبداع...</div>
         <div class="avatar-box">
           <div class="avatar">👨‍🏫</div>
           <div class="avatar-title">المعلم المهني</div>
@@ -189,14 +200,17 @@
       <div class="chat">
         <div class="messages" id="messages"></div>
         
+        <!-- الأزرار السريعة وأوامر 3D Axis المذهلة -->
         <div class="quick-actions" id="quickActions">
           <button class="btn-quick" onclick="sendQuickText('الخطوة التالية من فضلك ➡️')">الخطوة التالية ➡️</button>
           <button class="btn-quick" onclick="sendQuickText('أعطني مثالاً عملياً أو عطلاً شائعاً 🤔')">مثال عملي / عطل 🤔</button>
+          <button class="btn-quick btn-3d-action" onclick="sendQuickText('كيف أنشئ مجسم ثلاثي الأبعاد وأتحكم بالكاميرا؟ 🧊')">🧊 إضافة مجسم 3D</button>
+          <button class="btn-quick btn-3d-action" onclick="sendQuickText('أريد اختباراً تفاعلياً قصيرة لقياس فهمي لهذه الخطوة 🎯')">🎯 اختبار قصير</button>
           <button class="btn-quick" onclick="sendQuickText('كرر أو وضح هذا الجزء بأسلوب أبسط 🔄')">توضيح أبسط 🔄</button>
         </div>
 
         <div class="input-area">
-          <input type="text" id="userInput" placeholder="اكتب ردك أو سؤالك هنا..." onkeypress="handleKeyPress(event)">
+          <input type="text" id="userInput" placeholder="اكتب مهنتك أو سؤالك هنا..." onkeypress="handleKeyPress(event)">
           <button class="btn-action-mic" onclick="startVoiceInput()" title="تحدث بصوتك">🎙️</button>
           <button class="btn-action-send" onclick="sendMessage()">إرسال</button>
         </div>
@@ -244,7 +258,7 @@
       }
     }
 
-    /* LocalStorage Management for Multiple Careers */
+    /* LocalStorage Management */
     function loadSessions() {
       const saved = localStorage.getItem("3daxis_career_sessions");
       if (saved) {
@@ -265,7 +279,7 @@
         title: "مهنة جديدة",
         profession: "",
         messages: [
-          { role: "ai", text: "مرحباً بك في أكاديمية المهن منصة 3D Axis! 🎓\nأنا المعلم المهني. ما هي المهنة أو المهارة التي تحلم بإتقانها اليوم؟ (مثال: صيانة اللابتوب، برمجة الويب، الخياطة، النجارة...)" }
+          { role: "ai", text: "مرحباً بك في أكاديمية المهن داخل منصة 3D Axis المتطورة! 🎓✨\nأنا معلمك الافتراضي الذكي. ما هي المهنة، الحرفة، أو المهارة التقنية التي تحلم بإتقانها اليوم؟ (مثال: النجارة، صيانة اللابتوب، برمجة الويب، تجارة إلكترونية...)" }
         ]
       };
       sessions.unshift(newSession);
@@ -288,7 +302,7 @@
       
       const lastAiMsg = [...session.messages].reverse().find(m => m.role === 'ai');
       if (lastAiMsg) {
-        document.getElementById("boardText").textContent = "📖 السبورة: " + lastAiMsg.text.substring(0, 90) + "...";
+        document.getElementById("boardText").textContent = "📖 سبورة 3D Axis: " + lastAiMsg.text.substring(0, 85) + "...";
       }
     }
 
@@ -352,7 +366,6 @@
       const activeSession = sessions.find(s => s.id === currentSessionId);
       if(!activeSession) return;
 
-      // تحديد اسم المهنة إذا كانت أول محادثة ولم تُحدد بعد
       if (!activeSession.profession && activeSession.messages.length <= 2) {
         activeSession.profession = userText;
         activeSession.title = userText.substring(0, 20);
@@ -360,27 +373,24 @@
         activeSession.profession = activeSession.title;
       }
 
-      // إضافة رسالة المستخدم
       activeSession.messages.push({ role: "user", text: userText });
       addMessageUI(userText, "user");
       input.value = "";
       saveSessions();
 
-      const thinkingMsg = addMessageUI("المعلم المهني يفكر ويكتب لك الرد...", "ai", "thinking");
+      const thinkingMsg = addMessageUI("المعلم المهني يجهز لك الدرس الثلاثي الأبعاد...", "ai", "thinking");
 
-      // تحسين الأداء وحل مشكلة ضغط الـ URL عبر إرسال آخر 6 رسائل فقط مع التعليمات
       const currentProfession = activeSession.profession || "المهنة الحالية";
-      let promptText = `أنت معلم مهني تفاعلي لـ 3D Axis. نتعلم حالياً مهنة: "${currentProfession}".
-قواعد:
-1. اشرح خطوة عملية واحدة فقط بأسلوب مشوق ومبسط باللغة العربية.
-2. إذا طلب الطالب مثالاً عملياً أو عطلاً، أعطه مثالاً واقعياً مباشراً يخص "${currentProfession}".
-3. إذا قال "الخطوة التالية"، انتقل فوراً للخطوة التي تليها في تعلم "${currentProfession}".
-4. لا تسأل عن اسم المهنة مجدداً، واختم دائماً بسؤال تحقق قصير.
+      let promptText = `أنت "المعلم المهني الافتراضي الخبير" في منصة 3D Axis التعليمية الفريدة. نتعلم حالياً مهنة: "${currentProfession}".
+قواعد تفاعلية صارمة:
+1. اشرح بأسلوب مشوق، عميق، وعملي جداً يناسب بيئة الميتافيرس والتدريب المهني باللغة العربية الفصحى المبسطة.
+2. قدم خطوة واحدة فقط في كل مرة، واربطها ببيئة 3D Axis (مثل التعامل مع المجسمات، الكاميرا، التطبيق العملي).
+3. إذا طلب اختباراً أو مثالاً أو الخطوة التالية، نفذها بدقة عالية واختم بسؤال تحقق قصير ومحفز.
+4. لا تسأل عن اسم المهنة مجدداً نهائياً، واجعل الحوار كأنه جلسة حية بين أستاذ وطالب.
 
 سجل المحادثة الأخيرة:
 `;
       
-      // أخذ آخر 6 رسائل فقط لمنع تجاوز حد طول الرابط
       const recentMessages = activeSession.messages.slice(-6);
       recentMessages.forEach(m => {
         promptText += (m.role === 'user' ? "الطالب: " : "المعلم: ") + m.text + "\n";
@@ -397,10 +407,10 @@
           saveSessions();
 
           addMessageUI(aiReply, "ai");
-          document.getElementById("boardText").textContent = "📖 السبورة: " + aiReply.substring(0, 90) + "...";
+          document.getElementById("boardText").textContent = "📖 سبورة 3D Axis: " + aiReply.substring(0, 85) + "...";
           speak(aiReply);
         } else {
-          addMessageUI("⚠️ عذراً، الضغط على الخادم مرتفع. أعد محاولة الإرسال أو اضغط زر الخطوة التالية مجدداً.", "ai");
+          addMessageUI("⚠️ عذراً، الضغط على الخادم مرتفع. أعد المحاولة أو اضغط زر الخطوة التالية.", "ai");
         }
       } catch(error) {
         console.error(error);
@@ -441,7 +451,7 @@
       element.style.lineHeight = "1.6";
 
       const title = document.createElement("h2");
-      title.textContent = `دليل درس مهنة: ${activeSession.title} - منصة 3D Axis`;
+      title.textContent = `دليل درس مهنة: ${activeSession.title} - منصة 3D Axis التعليمية`;
       title.style.color = "#00838f";
       title.style.borderBottom = "2px solid #00838f";
       title.style.paddingBottom = "10px";
@@ -457,7 +467,7 @@
         p.style.borderRadius = "4px";
         p.style.whiteSpace = "pre-wrap";
         p.style.fontSize = "14px";
-        p.innerHTML = `<strong>${msg.role === 'ai' ? '👨‍🏫 المعلم المهني:' : '👤 المستأجر/الطالب:'}</strong><br>${msg.text}`;
+        p.innerHTML = `<strong>${msg.role === 'ai' ? '👨‍🏫 المعلم المهني (3D Axis):' : '👤 الطالب/المستأجر:'}</strong><br>${msg.text}`;
         element.appendChild(p);
       });
 
@@ -466,18 +476,28 @@
       footerNode.style.textAlign = "center";
       footerNode.style.fontSize = "12px";
       footerNode.style.color = "#666";
-      footerNode.textContent = "تم الانتاج والإعداد من منصة 3D Axis التعليمية | الأستاذ عمر حسان عبره";
+      footerNode.textContent = "تم الإنتاج والإعداد من منصة 3D Axis التعليمية | الأستاذ عمر حسان عبره";
       element.appendChild(footerNode);
 
       const opt = {
         margin:       10,
-        filename:     `درس_${activeSession.title}.pdf`,
+        filename:     `درس_${activeSession.title}_3D_Axis.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
         html2canvas:  { scale: 2, useCORS: true },
         jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
       };
 
       html2pdf().set(opt).from(element).save();
+    }
+
+    function exportBackup() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(sessions, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "3d_axis_careers_backup.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
     }
 
     function handleKeyPress(event) {
