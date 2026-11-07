@@ -263,9 +263,9 @@
       const newSession = {
         id: newId,
         title: "مهنة جديدة",
-        profession: "", // لحفظ اسم المهنة بشكل مستقل
+        profession: "",
         messages: [
-          { role: "ai", text: "مرحباً بك في أكاديمية المهن منصة 3D Axis! 🎓\nأنا المعلم المهني. ما هي المهنة أو المهارة التي تحلم بإتقانها اليوم؟ (مثال: صيانة اللابتوب، برمجة الويب، الخياطة...)" }
+          { role: "ai", text: "مرحباً بك في أكاديمية المهن منصة 3D Axis! 🎓\nأنا المعلم المهني. ما هي المهنة أو المهارة التي تحلم بإتقانها اليوم؟ (مثال: صيانة اللابتوب، برمجة الويب، الخياطة، النجارة...)" }
         ]
       };
       sessions.unshift(newSession);
@@ -352,10 +352,12 @@
       const activeSession = sessions.find(s => s.id === currentSessionId);
       if(!activeSession) return;
 
-      // تحديد اسم المهنة إذا كانت أول محادثة
+      // تحديد اسم المهنة إذا كانت أول محادثة ولم تُحدد بعد
       if (!activeSession.profession && activeSession.messages.length <= 2) {
         activeSession.profession = userText;
         activeSession.title = userText.substring(0, 20);
+      } else if (!activeSession.profession && activeSession.messages.length > 2) {
+        activeSession.profession = activeSession.title;
       }
 
       // إضافة رسالة المستخدم
@@ -366,24 +368,27 @@
 
       const thinkingMsg = addMessageUI("المعلم المهني يفكر ويكتب لك الرد...", "ai", "thinking");
 
-      // إعداد برومبت قوي مع تضمين اسم المهنة صراحة
-      const currentProfession = activeSession.profession || "المهنة المحددة سابقاً";
-      let systemPrompt = `أنت "المعلم المهني الافتراضي" لمنصة 3D Axis.
-المهنة أو المجال الحالي الذي نتعلمه الآن هو: "${currentProfession}".
-قواعد مهمة للرد:
-1. أنت معلم تفاعلي ودود تشرح خطوة بخطوة باللغة العربية.
-2. ترتبط ردودك دائماً بالمهنة الحالية "${currentProfession}" ولا تسأل عنها مجدداً مطلقاً لأننا في صلب الدرس الآن.
-3. إذا قال الطالب "الخطوة التالية" أو "أكمل" أو اختار زراً سريعاً، انتقل مباشرة للخطوة التالية العملية في مهنة (${currentProfession}).
-4. اشرح خطوة واحدة فقط ثم اطرح سؤالاً تفاعلياً قصيراً للتحقق من فهم الطالب.`;
+      // تحسين الأداء وحل مشكلة ضغط الـ URL عبر إرسال آخر 6 رسائل فقط مع التعليمات
+      const currentProfession = activeSession.profession || "المهنة الحالية";
+      let promptText = `أنت معلم مهني تفاعلي لـ 3D Axis. نتعلم حالياً مهنة: "${currentProfession}".
+قواعد:
+1. اشرح خطوة عملية واحدة فقط بأسلوب مشوق ومبسط باللغة العربية.
+2. إذا طلب الطالب مثالاً عملياً أو عطلاً، أعطه مثالاً واقعياً مباشراً يخص "${currentProfession}".
+3. إذا قال "الخطوة التالية"، انتقل فوراً للخطوة التي تليها في تعلم "${currentProfession}".
+4. لا تسأل عن اسم المهنة مجدداً، واختم دائماً بسؤال تحقق قصير.
 
-      let conversationHistory = systemPrompt + "\n\n---\nسجل المحادثة للدرس الحالي:\n";
-      activeSession.messages.forEach(m => {
-        conversationHistory += (m.role === 'user' ? "الطالب: " : "المعلم: ") + m.text + "\n";
+سجل المحادثة الأخيرة:
+`;
+      
+      // أخذ آخر 6 رسائل فقط لمنع تجاوز حد طول الرابط
+      const recentMessages = activeSession.messages.slice(-6);
+      recentMessages.forEach(m => {
+        promptText += (m.role === 'user' ? "الطالب: " : "المعلم: ") + m.text + "\n";
       });
-      conversationHistory += `المعلم (تابع الشرح بأسلوب عملي وتفاعلي في مهنة ${currentProfession}):`;
+      promptText += "المعلم:";
 
       try {
-        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(conversationHistory)}`);
+        const response = await fetch(`https://text.pollinations.ai/${encodeURIComponent(promptText)}`);
         thinkingMsg.remove();
 
         if (response.ok) {
@@ -395,7 +400,7 @@
           document.getElementById("boardText").textContent = "📖 السبورة: " + aiReply.substring(0, 90) + "...";
           speak(aiReply);
         } else {
-          addMessageUI("⚠️ عذراً، حدث ضغط مؤقت في الخادم. حاول مرة أخرى.", "ai");
+          addMessageUI("⚠️ عذراً، الضغط على الخادم مرتفع. أعد محاولة الإرسال أو اضغط زر الخطوة التالية مجدداً.", "ai");
         }
       } catch(error) {
         console.error(error);
